@@ -14,7 +14,7 @@ function App() {
     const {currentUser} = useAuth();
 
     function isSeller() {
-        return (currentUser["role"] === "ADMIN") //!= null
+        return (currentUser["role"] === "ADMIN")
     }
 
     return (
