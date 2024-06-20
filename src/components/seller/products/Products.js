@@ -34,9 +34,11 @@ const ProductsPage = () => {
         if (text && text.trim() !== "") {
             url += `?search=${text}`
             setIsFiltering(true)
+        }else {
+            url += `?pageNumber=${currentPage}&pageSize=10&direction=asc&orderBy=name`
         }
         setLoading(true)
-        apiGet(url+ `?pageNumber=${currentPage}&pageSize=10&direction=asc&orderBy=name` )
+        apiGet(url)
             .then((response) => {
                 if (response.data.data.length > 0) {
                     setProducts(response.data.data);
@@ -65,7 +67,12 @@ const ProductsPage = () => {
     }
 
     function setPage(pageNumber) {
-        setCurrentPage(pageNumber)
+        if(pageNumber < 0) {
+            setCurrentPage(0);
+            return;
+        }
+        setCurrentPage(pageNumber);
+        setSearch("");
     }
 
     return <>

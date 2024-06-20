@@ -4,13 +4,14 @@ import {PageTitle} from "../../../_metronic/layout/core";
 import {Link} from "react-router-dom";
 import {apiGet} from "../../common/apiService";
 import clsx from "clsx";
-import {API_URL, CUSTOMER_PRODUCTS_URL} from "../../common/apiUrl";
+import {API_URL, CUSTOMER_PRODUCTS_URL, PRODUCTS_URL} from "../../common/apiUrl";
 
 const ProductsPage = () => {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(false)
     const [isFiltering, setIsFiltering] = useState(false)
     const [search, setSearch] = useState("")
+    const [currentPage, setCurrentPage] = useState(0);
 
     // useEffect(() => {
     //     fetchProducts()
@@ -24,13 +25,16 @@ const ProductsPage = () => {
 
     useEffect(() => {
         fetchProducts(search)
-    }, [search])
+    }, [search, currentPage])
 
     function fetchProducts(text) {
-        let url = CUSTOMER_PRODUCTS_URL;
+        // let url = CUSTOMER_PRODUCTS_URL;
+        let url = PRODUCTS_URL;
         if (text && text.trim() !== "") {
             url += `?search=${text}`
             setIsFiltering(true)
+        }else{
+            url +=`?pageNumber=${currentPage}&pageSize=10&direction=asc&orderBy=name`
         }
         setLoading(true)
         apiGet(url)
@@ -45,6 +49,15 @@ const ProductsPage = () => {
             setLoading(false)
             setIsFiltering(false)
         });
+    }
+
+    function setPage(pageNumber) {
+        if(pageNumber < 0) {
+            setCurrentPage(0);
+            return;
+        }
+        setCurrentPage(pageNumber);
+        setSearch("");
     }
 
     return <>
@@ -165,17 +178,20 @@ const ProductsPage = () => {
 
             {products.length > 0 && <ul className="pagination pagination-circle pagination-outline mt-5">
                 <li key={1} className="page-item first disabled m-1">
-                    <a href="#" className="page-link px-0">
+                    <button href="#" className="btn btn-sm btn-primary icon"
+                            onClick= {() => setPage(currentPage - 1)} >
                         <i className="ki-duotone ki-double-left fs-2x"><span className="path1"></span><span
                             className="path2"></span></i>
-                    </a>
+                    </button>
                 </li>
-                <li key={2} className="page-item m-1 active"><a href="#" className="page-link fs-2">1</a></li>
+                <li key={2} className="page-item m-1 active"><a href="#" className="page-link fs-2">{currentPage}</a></li>
                 <li key={3} className="page-item last disabled m-1">
-                    <a href="#" className="page-link px-0">
+                    <button href="#" className="page-link px-0"
+                            className="btn btn-sm btn-primary icon"
+                            onClick= {() => setPage(currentPage + 1)}>
                         <i className="ki-duotone ki-double-right fs-2x"><span className="path1"></span><span
                             className="path2"></span></i>
-                    </a>
+                    </button>
                 </li>
             </ul>}
 
