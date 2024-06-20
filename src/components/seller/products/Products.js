@@ -14,6 +14,7 @@ const ProductsPage = () => {
     const [loading, setLoading] = useState(false)
     const [isFiltering, setIsFiltering] = useState(false)
     const [search, setSearch] = useState("");
+    const [currentPage, setCurrentPage] = useState(0);
 
     // useEffect(() => {
     //     fetchProducts()
@@ -26,7 +27,7 @@ const ProductsPage = () => {
 
     useEffect(() => {
         fetchProducts(search)
-    }, [search])
+    }, [search, currentPage])
 
     function fetchProducts(text) {
         let url = PRODUCTS_URL;
@@ -35,7 +36,7 @@ const ProductsPage = () => {
             setIsFiltering(true)
         }
         setLoading(true)
-        apiGet(url)
+        apiGet(url+ `?pageNumber=${currentPage}&pageSize=10&direction=asc&orderBy=name` )
             .then((response) => {
                 if (response.data.data.length > 0) {
                     setProducts(response.data.data);
@@ -61,6 +62,10 @@ const ProductsPage = () => {
                 }).finally(() => {
             });
         }
+    }
+
+    function setPage(pageNumber) {
+        setCurrentPage(pageNumber)
     }
 
     return <>
@@ -231,28 +236,32 @@ const ProductsPage = () => {
                                     <ul className="pagination">
                                         <li key="1" className="paginate_button page-item previous disabled"
                                             id="kt_ecommerce_products_table_previous">
-                                            <a href="#"
+                                            <button
                                                aria-controls="kt_ecommerce_products_table"
                                                data-dt-idx="0" tabIndex="0"
-                                               className="page-link"><i
-                                                className="previous"></i>
-                                            </a>
+                                               className="btn btn-sm btn-primary icon"
+                                               onClick= {() => setPage(currentPage - 1)}
+                                            >-
+
+                                            </button>
                                         </li>
                                         <li key="2" className="paginate_button page-item active">
                                             <a href="#"
                                                aria-controls="kt_ecommerce_products_table"
                                                data-dt-idx="1" tabIndex="0"
-                                               className="page-link">1
+                                               className="page-link">{currentPage}
                                             </a>
                                         </li>
                                         <li key="3" className="paginate_button page-item next disabled"
                                             id="kt_ecommerce_products_table_next">
-                                            <a href="#"
+                                            <button
                                                aria-controls="kt_ecommerce_products_table"
                                                data-dt-idx="6" tabIndex="0"
-                                               className="page-link">
-                                                <i className="next"></i>
-                                            </a>
+                                               className="btn btn-sm btn-primary icon"
+                                               onClick= {() => setPage(currentPage + 1)}>
+
+                                                +
+                                            </button>
                                         </li>
                                     </ul>
                                 </div>
