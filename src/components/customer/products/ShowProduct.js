@@ -463,18 +463,6 @@ const ShowProductPage = () => {
                             </span>
                         </div>}
 
-                        {product.status === "Running" && <div className="text-center">
-                            <span className="fs-1 fw-semibold text-gray-400">$</span>
-                            <span ref={highestBidAmountRef} className="text-gray-900 fw-bolder fs-5x mt-5">
-                                0
-                            </span>
-                            {product && product.highestBidAmount > 0 &&
-                                <div className="fs-2 fw-bold text-gray-900">
-                                    {product.highestBidUser.name}
-                                </div>}
-                            <div
-                                className="fs-1 fw-bold text-gray-400">{product.highestBidAmount > 0 ? "Highest Order" : "Starting Price"}</div>
-                        </div>}
 
                         {["Closed", "Sold", "Sold & Paid"].includes(product.status) &&
                             <div className="separator my-5"></div>}
